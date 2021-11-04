@@ -1,0 +1,44 @@
+{
+    "name": "alamosbasement/closed-properties",
+    "description": "Custom Plugin to list closed properties listed on site",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "closed properties"
+    ],
+    "support": {
+        "docs": "https://github.com/https://github.com/Alamos-Basement/closed-properties/blob/master/README.md",
+        "issues": "https://github.com/https://github.com/Alamos-Basement/closed-properties/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "torreyj",
+            "homepage": "https://github.com/torreyj"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "alamosbasement\\closedproperties\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Closed Properties",
+        "handle": "closed-properties",
+        "developer": "torreyj",
+        "developerUrl": "https://github.com/torreyj",
+        "documentationUrl": "https://github.com/https://github.com/Alamos-Basement/closed-properties/blob/master/README.md",
+        "changelogUrl": "https://raw.githubusercontent.com/https://github.com/Alamos-Basement/closed-properties/master/CHANGELOG.md",
+        "components": {
+            "closedPropertiesService": "alamosbasement\\closedproperties\\services\\ClosedPropertiesService"
+        },
+        "class": "alamosbasement\\closedproperties\\ClosedProperties"
+    }
+}
