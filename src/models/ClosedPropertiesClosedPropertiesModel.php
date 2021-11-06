@@ -59,4 +59,14 @@ class ClosedPropertiesClosedPropertiesModel extends Model
             ['someAttribute', 'default', 'value' => 'Some Default'],
         ];
     }
+
+    //craft2 function updated
+    protected function defineAttributes()
+    {
+        return [
+              'propId' => AttributeType::Number,
+              'photos' => AttributeType::String,
+              'order' => AttributeType::Number,
+        ];
+    }
 }

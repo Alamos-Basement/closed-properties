@@ -1,0 +1,139 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = "Closed Properties" %}
+{% set closedProperties = craft.closedProperties.getAll %}
+
+{# protect against database error #}
+{% set selectedProperties = [] %}
+{% for property in craft.closedProperties.getSelected %}
+  {% if closedProperties[property.propId] ?? null %}
+    {% set selectedProperties = selectedProperties|merge([property]) %}
+  {% endif %}
+{% endfor %}
+
+{##
+ # CSS and JS for this plugin are
+ # bundled in webpack to the dist folder
+ # just like other front-end resources
+ #}
+{% includeCssFile "/dist/styles/closed-properties.css" %}
+{% includeJsFile "/dist/scripts/closed-properties.bundle.js" %}
+
+{% set content %}
+
+<div class="closed-properties-instructions">
+  <h2>Instructions:</h2> {{ craft.closedProperties.exampleVariable }}
+  <ul>
+    <li>
+      You may select up to <strong>five</strong> closed properties to feature on the home page and <strong>three</strong> photos for each featured property.
+    </li>
+    <li>
+      Alter the order of the properties by dragging and dropping the addresses at the bottom of the page.
+    </li>
+    <li>
+      Reorder a property's featured images by dragging and dropping its images.
+    </li>
+  </ul>
+</div>
+
+<div class="closed-properties-list">
+  {% for property in selectedProperties %}
+    <hr>
+    <div class="closed-properties-list__property" data-id="{{ property.propId }}">
+      <h3>{{ closedProperties[property.propId].address }}</h3>
+      <div class="closed-properties-list__images">
+
+        {# first print selected photos in order #}
+        {% for id in property.photos %}
+          {% set photo = closedProperties[property.propId].photos|findPhotoById(id) %}
+          {% if photo %}
+            <div
+              class="closed-properties-list__tile selected"
+              data-img-id="{{ photo.id }}"
+            >
+              <div
+                class="closed-properties-list__image"
+                style="background-image: url({{ photo.url }})"
+              ></div>
+              <div class="closed-properties-list__selector"></div>
+            </div>
+          {% endif %}
+        {% endfor %}
+
+        {# then print the rest of the photos #}
+        {% for photo in closedProperties[property.propId].photos if photo.id not in property.photos %}
+          <div
+            class="closed-properties-list__tile"
+            data-img-id="{{ photo.id }}"
+          >
+            <div
+              class="closed-properties-list__image"
+              style="background-image: url({{ photo.url }})"
+            ></div>
+            <div class="closed-properties-list__selector"></div>
+          </div>
+        {% endfor %}
+
+      </div>
+      <div class="btn edit-photos-button" tabindex="0">Choose photos</div>
+      {% include 'closedproperties/partials/_remove-button' with {
+        propId: property.propId
+      } %}
+      {% include 'closedproperties/partials/_save-button' with {
+        propId: property.propId,
+        photos: property.photos|json_encode
+      } %}
+      <div class="btn cancel-button" tabindex="0">Cancel</div>
+    </div>
+  {% endfor %}
+</div>
+
+{% if selectedProperties|length < 5 %}
+  <hr>
+  <div class="address-picker">
+    <div class="btn add icon last add-property-button" tabindex="0">Add a property</div>
+    <div class="address-picker__input-wrapper input ltr">
+      <h2>Add a property</h2>
+      <input class="text nicetext fullwidth address-picker__input" type="text" data-show-chars-left="" autocomplete="off" placeholder="Start typing an address...">
+      <form method="post" accept-charset="UTF-8" class="address-picker__form">
+        {{ getCsrfInput() }}
+        <input type="hidden" name="action" value="closedProperties/save">
+        <input type="hidden" name="propId" value="" class="id-input">
+        <input type="hidden" name="photos" value="" class="photos-input">
+        <div class="address-picker__list-wrapper"></div>
+      </form>
+    </div>
+  </div>
+{% endif %}
+
+{% if selectedProperties|length > 1 %}
+  <hr>
+  <div class="reorder-properties-list">
+    <h2>Reorder properties</h2>
+    <ul class="reorder-properties-list__list">
+      {% for property in selectedProperties %}
+        <li class="reorder-properties-list__property" data-id="{{ property.propId }}">
+          {{ closedProperties[property.propId].address }}
+        </li>
+      {% endfor %}
+    </ul>
+    <form method="post" accept-charset="UTF-8" class="reorder-properties-list__form">
+      {% set order = [] %}
+      {% for property in selectedProperties %}
+        {% set order = order|merge([property.propId]) %}
+      {% endfor %}
+      {{ getCsrfInput() }}
+      <input type="hidden" name="action" value="closedProperties/reorder">
+      <input type="hidden" name="order" data-original-order="{{ order|json_encode }}" value="{{ order|json_encode }}" class="order-input">
+      <input type="submit" class="btn submit save-button" value="Save">
+    </form>
+    <div class="btn cancel-button" tabindex="0">Cancel</div>
+  </div>
+{% endif %}
+
+<script type="text/javascript">
+  var closedProperties = {{ closedProperties|json_encode|raw }};
+</script>
+
+{% endset %}

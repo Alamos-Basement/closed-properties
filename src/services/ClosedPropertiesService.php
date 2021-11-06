@@ -14,6 +14,7 @@ use alamosbasement\closedproperties\ClosedProperties;
 
 use Craft;
 use craft\base\Component;
+use craft\db\Query;
 
 /**
  * ClosedPropertiesService Service
@@ -49,4 +50,74 @@ class ClosedPropertiesService extends Component
 
         return $result;
     }
+
+      // Get all closed properties for use in JS
+      public function getAllClosedProperties()
+      {
+        $allProperties = json_decode(file_get_contents("../web/data/properties-sorted.json"), true);
+        $closedProperties = array_filter($allProperties, function($property) {
+          return $property['sale_deal_status_id'] == 3;
+        });
+        
+        return $closedProperties;
+      }
+
+      // Get selected closed properties from database
+      public function getSelectedClosedProperties()
+      {
+        //$selectedProperties = ClosedPropertiesRecord::model()->findAll(array());
+        $selectedProperties = (new Query())
+            ->from(['{{%closedproperties}}'])
+            ->all();
+        usort($selectedProperties, function($a, $b) {
+          return $a['order'] - $b['order'];
+        });
+
+        // Decode JSON array of photo IDs
+        array_map(function($val) {
+          $val['photos'] = json_decode($val['photos']);
+          return $val;
+        }, $selectedProperties);
+
+        return $selectedProperties;
+      }
+
+      // Save property
+      public function save($model)
+      {
+        $existingRecord = ClosedPropertiesRecord::model()->findByAttributes(array('propId' => $model->propId));
+        if ($existingRecord) {
+          $existingRecord->setAttribute('photos', $model->photos);
+          $existingRecord->save();
+        } else {
+          $property = new ClosedPropertiesRecord();
+          $property->setAttribute('propId', $model->propId);
+          $property->setAttribute('photos', $model->photos);
+          $property->setAttribute('order', $model->order);
+          craft()->db->createCommand()->insert('closedproperties', $property);
+        }
+      }
+
+      // Remove property
+      public function remove($id)
+      {
+        $existingRecord = ClosedPropertiesRecord::model()->findByAttributes(array('propId' => $id));
+        if ($existingRecord) {
+          $pk = $existingRecord->id;
+          $existingRecord->deleteByPk($pk);
+        }
+      }
+
+      // Reorder properties
+      public function reorder($order)
+      {
+        for($i = 0; $i < count($order); $i++) {
+          $record = ClosedPropertiesRecord::model()->findByAttributes(array('propId' => $order[$i]));
+          if ($record) {
+            $record->setAttribute('order', $i);
+            $record->save();
+          }
+        }
+      }
+
 }

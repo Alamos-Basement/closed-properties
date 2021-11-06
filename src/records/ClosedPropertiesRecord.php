@@ -50,6 +50,22 @@ class ClosedPropertiesRecord extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%closedproperties_closedpropertiesrecord}}';
+        //return '{{%closedproperties_closedpropertiesrecord}}';
+        return '{{%closedproperties}}';
+    }
+
+
+    protected function defineAttributes()
+    {
+        return [
+            'propId' => AttributeType::Number,
+            'photos' => AttributeType::String,
+            'order' => AttributeType::Number,
+        ];
+    }
+
+    public function defineRelations()
+    {
+        return array();
     }
 }

@@ -54,7 +54,7 @@ class ClosedPropertiesTwigExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('someFilter', [$this, 'someInternalFunction']),
+            new TwigFilter('findPhotoById', [$this, 'findPhotoById']),
         ];
     }
 
@@ -84,5 +84,13 @@ class ClosedPropertiesTwigExtension extends AbstractExtension
         $result = $text . " in the way";
 
         return $result;
+    }
+
+    public function findPhotoById($photos, $id)
+    {
+      foreach($photos as $key => $val) {
+        if ($val["id"] === $id)
+          return $val;
+      }
     }
 }

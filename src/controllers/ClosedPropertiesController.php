@@ -76,4 +76,39 @@ class ClosedPropertiesController extends Controller
 
         return $result;
     }
+
+
+    /** OLD Craft2 functions **/
+    public function actionSave()
+    {
+        $this->requirePostRequest();
+
+        $id = craft()->request->getPost('propId');
+        $photos = craft()->request->getPost('photos');
+
+        $propertyModel = new ClosedPropertiesClosedPropertiesModel;
+        $propertyModel->propId = $id;
+        $propertyModel->photos = $photos;
+        $propertyModel->order = 2; // put it at the end
+
+        craft()->closedProperties->save($propertyModel);
+    }
+
+    public function actionRemove()
+    {
+        $this->requirePostRequest();
+
+        $id = craft()->request->getPost('propId');
+
+        craft()->closedProperties->remove($id);
+    }
+
+    public function actionReorder()
+    {
+        $this->requirePostRequest();
+
+        $order = json_decode(craft()->request->getPost('order'));
+
+        craft()->closedProperties->reorder($order);
+    }
 }
