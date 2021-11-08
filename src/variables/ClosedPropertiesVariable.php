@@ -53,19 +53,22 @@ class ClosedPropertiesVariable
     //     }
     //     return $result;
 
-        ClosedProperties::$plugin->closedPropertiesService->exampleService();
+        $result = ClosedProperties::$plugin->closedPropertiesService->exampleService();
+        return $result;
      }
 
 
     public function getAll()
     {
         //return craft()->closedProperties->getAllClosedProperties();
-        ClosedProperties::$plugin->closedPropertiesService->getAllClosedProperties();
+        $result = ClosedProperties::$plugin->closedPropertiesService->getAllClosedProperties();
+        return $result;
     }
 
     public function getSelected()
     {
         //return craft()->closedProperties->getSelectedClosedProperties();
-        ClosedProperties::$plugin->closedPropertiesService->getSelectedClosedProperties();
+        $result = ClosedProperties::$plugin->closedPropertiesService->getSelectedClosedProperties();
+        return $result;
     }
 }
