@@ -37,7 +37,10 @@ class ClosedPropertiesClosedPropertiesModel extends Model
      *
      * @var string
      */
-    public $someAttribute = 'Some Default';
+    //public $someAttribute = 'Some Default';
+    protected $propId = 0;
+    protected $photos = '';
+    protected $order = 0;
 
     // Public Methods
     // =========================================================================
@@ -61,12 +64,12 @@ class ClosedPropertiesClosedPropertiesModel extends Model
     }
 
     //craft2 function updated
-    protected function defineAttributes()
-    {
-        return [
-              'propId' => AttributeType::Number,
-              'photos' => AttributeType::String,
-              'order' => AttributeType::Number,
-        ];
-    }
+    // protected function defineAttributes()
+    // {
+    //     return [
+    //           'propId' => AttributeType::Number,
+    //           'photos' => AttributeType::String,
+    //           'order' => AttributeType::Number,
+    //     ];
+    // }
 }

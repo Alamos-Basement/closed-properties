@@ -11,10 +11,12 @@
 namespace alamosbasement\closedproperties\services;
 
 use alamosbasement\closedproperties\ClosedProperties;
+use alamosbasement\closedproperties\records\ClosedPropertiesRecord;
 
 use Craft;
 use craft\base\Component;
 use craft\db\Query;
+use craft\db\ActiveQueryInterface;
 
 /**
  * ClosedPropertiesService Service
@@ -85,16 +87,23 @@ class ClosedPropertiesService extends Component
       // Save property
       public function save($model)
       {
-        $existingRecord = ClosedPropertiesRecord::model()->findByAttributes(array('propId' => $model->propId));
+        //$existingRecord = ClosedPropertiesRecord::model()->findByAttributes(array('propId' => $model->propId));
+
+        $existingRecord = ClosedPropertiesRecord::find()
+           ->where(['propId' => $model['propId']])
+           ->one();
+
         if ($existingRecord) {
-          $existingRecord->setAttribute('photos', $model->photos);
+          $existingRecord->setAttribute('photos', $model['photos']);
           $existingRecord->save();
         } else {
           $property = new ClosedPropertiesRecord();
-          $property->setAttribute('propId', $model->propId);
-          $property->setAttribute('photos', $model->photos);
-          $property->setAttribute('order', $model->order);
-          craft()->db->createCommand()->insert('closedproperties', $property);
+          $property->setAttribute('propId', $model['propId']);
+          $property->setAttribute('photos', $model['photos']);
+          $property->setAttribute('order', $model['order']);
+
+          $command = Craft::$app->db->createCommand()->insert('{{%closedproperties}}', $property);
+          $command->execute();
         }
       }
 

@@ -14,6 +14,7 @@ use alamosbasement\closedproperties\ClosedProperties;
 
 use Craft;
 use craft\web\Controller;
+use alamosbasement\closedproperties\models\ClosedPropertiesClosedPropertiesModel;
 
 /**
  * ClosedProperties Controller
@@ -78,20 +79,22 @@ class ClosedPropertiesController extends Controller
     }
 
 
-    /** OLD Craft2 functions **/
     public function actionSave()
     {
         $this->requirePostRequest();
 
-        $id = craft()->request->getPost('propId');
-        $photos = craft()->request->getPost('photos');
+        $id = Craft::$app->getRequest()->getBodyParam('propId');
+        $photos = Craft::$app->getRequest()->getBodyParam('photos');
 
         $propertyModel = new ClosedPropertiesClosedPropertiesModel;
-        $propertyModel->propId = $id;
-        $propertyModel->photos = $photos;
-        $propertyModel->order = 2; // put it at the end
+        //$propertyModel = $propertyModel->setAttributes(['propId' => $id, 'photos' => $photos, 'order' => 2]);
 
-        craft()->closedProperties->save($propertyModel);
+        $propertyModel['propId'] = $id;
+        $propertyModel['photos'] = $photos;
+        $propertyModel['order'] = 3; // put it at the end
+
+        $result = ClosedProperties::$plugin->closedPropertiesService->save($propertyModel);
+        return $result;
     }
 
     public function actionRemove()
