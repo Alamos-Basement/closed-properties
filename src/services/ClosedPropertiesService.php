@@ -110,10 +110,15 @@ class ClosedPropertiesService extends Component
       // Remove property
       public function remove($id)
       {
-        $existingRecord = ClosedPropertiesRecord::model()->findByAttributes(array('propId' => $id));
+        //$existingRecord = ClosedPropertiesRecord::model()->findByAttributes(array('propId' => $id));
+        $existingRecord = ClosedPropertiesRecord::find()
+           ->where(['propId' => $id])
+           ->one();
         if ($existingRecord) {
-          $pk = $existingRecord->id;
-          $existingRecord->deleteByPk($pk);
+          $pk = $existingRecord['id'];
+          //$existingRecord->deleteByPk($pk);
+          $command = Craft::$app->db->createCommand()->delete('{{%closedproperties}}', 'id = :primaryKey', [':primaryKey' => $pk]);
+          $command->execute();
         }
       }
 
@@ -121,7 +126,8 @@ class ClosedPropertiesService extends Component
       public function reorder($order)
       {
         for($i = 0; $i < count($order); $i++) {
-          $record = ClosedPropertiesRecord::model()->findByAttributes(array('propId' => $order[$i]));
+          //$record = ClosedPropertiesRecord::model()->findByAttributes(array('propId' => $order[$i]));
+          $record = ClosedPropertiesRecord::find()->where(['propId' => $order[$i]])->one();
           if ($record) {
             $record->setAttribute('order', $i);
             $record->save();

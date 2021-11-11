@@ -87,11 +87,10 @@ class ClosedPropertiesController extends Controller
         $photos = Craft::$app->getRequest()->getBodyParam('photos');
 
         $propertyModel = new ClosedPropertiesClosedPropertiesModel;
-        //$propertyModel = $propertyModel->setAttributes(['propId' => $id, 'photos' => $photos, 'order' => 2]);
 
         $propertyModel['propId'] = $id;
         $propertyModel['photos'] = $photos;
-        $propertyModel['order'] = 3; // put it at the end
+        $propertyModel['order'] = 4; // put it at the end
 
         $result = ClosedProperties::$plugin->closedPropertiesService->save($propertyModel);
         return $result;
@@ -101,17 +100,18 @@ class ClosedPropertiesController extends Controller
     {
         $this->requirePostRequest();
 
-        $id = craft()->request->getPost('propId');
+        $id = Craft::$app->getRequest()->getBodyParam('propId');
 
-        craft()->closedProperties->remove($id);
+        $result = ClosedProperties::$plugin->closedPropertiesService->remove($id);
+
     }
 
     public function actionReorder()
     {
         $this->requirePostRequest();
 
-        $order = json_decode(craft()->request->getPost('order'));
+        $order = json_decode(Craft::$app->getRequest()->getBodyParam('order'));
 
-        craft()->closedProperties->reorder($order);
+        $result = ClosedProperties::$plugin->closedPropertiesService->reorder($order);
     }
 }
