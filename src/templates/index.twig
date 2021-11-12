@@ -43,37 +43,42 @@
     <div class="closed-properties-list__property" data-id="{{ property.propId }}">
       <h3>{{ closedProperties[property.propId].address }}</h3>
       <div class="closed-properties-list__images">
-        
-        {% set selectedProperty = property.photos|replace({'[': "", ']': ""}) %}
-        {{ selectedProperty }}
-        {% for photos in closedProperties[property.propId].photos %}
 
-          {# first print selected photos in order #}
-          {% if selectedProperty == photos.id %}
-              <div
-                class="closed-properties-list__tile selected"
-                data-img-id="{{ photos.id }}"
-              >
-                <div
-                  class="closed-properties-list__image"
-                  style="background-image: url('{{ photos.url }}')"
-                ></div>
-                <div class="closed-properties-list__selector"></div>
-              </div>
+        {% set featured_photos = property.photos|split(',') %}
 
-          {# then print the rest of the photos #}
-          {% else %}
+        {# first print selected photos in order #}
+        {% for id in featured_photos %}
+
+          {% set id = id|replace({'[': "", ']': ""}) %}
+          {% set id = id|force_to_int %}
+
+          {% set photo = closedProperties[property.propId].photos|findPhotoById(id) %}
+          {% if photo %}
+            <div
+              class="closed-properties-list__tile selected"
+              data-img-id="{{ photo.id }}"
+            >
               <div
-                class="closed-properties-list__tile"
-                data-img-id="{{ photos.id }}"
-              >
-                <div
-                  class="closed-properties-list__image"
-                  style="background-image: url('{{ photos.url }}')"
-                ></div>
-                <div class="closed-properties-list__selector"></div>
-              </div>
+                class="closed-properties-list__image"
+                style="background-image: url({{ photo.url }})"
+              ></div>
+              <div class="closed-properties-list__selector"></div>
+            </div>
           {% endif %}
+        {% endfor %}
+
+        {# then print the rest of the photos #}
+        {% for photo in closedProperties[property.propId].photos if photo.id not in property.photos %}
+          <div
+            class="closed-properties-list__tile"
+            data-img-id="{{ photo.id }}"
+          >
+            <div
+              class="closed-properties-list__image"
+              style="background-image: url({{ photo.url }})"
+            ></div>
+            <div class="closed-properties-list__selector"></div>
+          </div>
         {% endfor %}
 
       </div>

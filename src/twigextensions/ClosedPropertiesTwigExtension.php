@@ -55,6 +55,7 @@ class ClosedPropertiesTwigExtension extends AbstractExtension
     {
         return [
             new TwigFilter('findPhotoById', [$this, 'findPhotoById']),
+            new TwigFilter('force_to_int', fn ($value) => intval($value)),
         ];
     }
 
