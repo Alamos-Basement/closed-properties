@@ -1,0 +1,6 @@
+<form method="post" accept-charset="UTF-8" class="closed-properties-form">
+  {{ getCsrfInput() }}
+  <input type="hidden" name="action" value="closedProperties/remove">
+  <input type="hidden" name="propId" value="{{ propId }}">
+  <input type="submit" class="btn remove-button" value="Remove property">
+</form>

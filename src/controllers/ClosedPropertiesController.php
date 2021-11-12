@@ -14,6 +14,7 @@ use alamosbasement\closedproperties\ClosedProperties;
 
 use Craft;
 use craft\web\Controller;
+use alamosbasement\closedproperties\models\ClosedPropertiesClosedPropertiesModel;
 
 /**
  * ClosedProperties Controller
@@ -75,5 +76,44 @@ class ClosedPropertiesController extends Controller
         $result = 'Welcome to the ClosedPropertiesController actionDoSomething() method';
 
         return $result;
+    }
+
+
+    public function actionSave()
+    {
+        $this->requirePostRequest();
+
+        $id = Craft::$app->getRequest()->getBodyParam('propId');
+        $photos = Craft::$app->getRequest()->getBodyParam('photos');
+
+        print_r($photos);
+
+        $propertyModel = new ClosedPropertiesClosedPropertiesModel;
+
+        $propertyModel['propId'] = $id;
+        $propertyModel['photos'] = $photos;
+        $propertyModel['order'] = 4; // put it at the end
+
+        $result = ClosedProperties::$plugin->closedPropertiesService->save($propertyModel);
+        return $result;
+    }
+
+    public function actionRemove()
+    {
+        $this->requirePostRequest();
+
+        $id = Craft::$app->getRequest()->getBodyParam('propId');
+
+        $result = ClosedProperties::$plugin->closedPropertiesService->remove($id);
+
+    }
+
+    public function actionReorder()
+    {
+        $this->requirePostRequest();
+
+        $order = json_decode(Craft::$app->getRequest()->getBodyParam('order'));
+
+        $result = ClosedProperties::$plugin->closedPropertiesService->reorder($order);
     }
 }

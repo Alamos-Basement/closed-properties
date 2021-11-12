@@ -47,10 +47,28 @@ class ClosedPropertiesVariable
      */
     public function exampleVariable($optional = null)
     {
-        $result = "And away we go to the Twig template...";
-        if ($optional) {
-            $result = "I'm feeling optional today...";
-        }
+    //     $result = "And away we go to the Twig template...";
+    //     if ($optional) {
+    //         $result = "I'm feeling optional today...";
+    //     }
+    //     return $result;
+
+        $result = ClosedProperties::$plugin->closedPropertiesService->exampleService();
+        return $result;
+     }
+
+
+    public function getAll()
+    {
+        //return craft()->closedProperties->getAllClosedProperties();
+        $result = ClosedProperties::$plugin->closedPropertiesService->getAllClosedProperties();
+        return $result;
+    }
+
+    public function getSelected()
+    {
+        //return craft()->closedProperties->getSelectedClosedProperties();
+        $result = ClosedProperties::$plugin->closedPropertiesService->getSelectedClosedProperties();
         return $result;
     }
 }
