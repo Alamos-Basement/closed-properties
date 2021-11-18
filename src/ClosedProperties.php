@@ -21,6 +21,8 @@ use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\events\RegisterUrlRulesEvent;
+use craft\events\RegisterCpNavItemsEvent;
+use craft\web\twig\variables\Cp;
 
 use yii\base\Event;
 
@@ -96,6 +98,8 @@ class ClosedProperties extends Plugin
         parent::init();
         self::$plugin = $this;
 
+        Craft::setAlias('@closed-properties', __DIR__);
+
         // Add in our Twig extensions
         Craft::$app->view->registerTwigExtension(new ClosedPropertiesTwigExtension());
 
@@ -107,6 +111,19 @@ class ClosedProperties extends Plugin
                 $event->rules['siteActionTrigger1'] = 'closed-properties/closed-properties';
             }
         );
+
+        //Add to Admin Menu
+        // Event::on(
+        //     Cp::class,
+        //     Cp::EVENT_REGISTER_CP_NAV_ITEMS,
+        //     function(RegisterCpNavItemsEvent $event) {
+        //         $event->navItems[] = [
+        //             'url' => '/admin/closed-properties',
+        //             'label' => 'Closed Properties',
+        //             'icon' => '/resources/icon.svg',
+        //         ];
+        //     }
+        // );
 
         // Register our CP routes
         Event::on(
