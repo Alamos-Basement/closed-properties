@@ -86,7 +86,7 @@ class ClosedPropertiesController extends Controller
         $id = Craft::$app->getRequest()->getBodyParam('propId');
         $photos = Craft::$app->getRequest()->getBodyParam('photos');
 
-        print_r($photos);
+        //print_r($photos);
 
         $propertyModel = new ClosedPropertiesClosedPropertiesModel;
 
